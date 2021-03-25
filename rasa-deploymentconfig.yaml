@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: DeploymentConfig
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: rasa
+  name: rasa
+spec:
+  replicas: 1
+  selector:
+    io.kompose.service: rasa
+  strategy:
+    resources: {}
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: rasa
+    spec:
+      containers:
+        - image: ' '
+          name: rasa
+          resources: {}
+          volumeMounts:
+            - mountPath: /app/projects
+              name: rasa-claim0
+            - mountPath: /app/config.yml
+              name: rasa-claim1
+            - mountPath: /app/logs
+              name: rasa-claim2
+      restartPolicy: Always
+      volumes:
+        - name: rasa-claim0
+          persistentVolumeClaim:
+            claimName: rasa-claim0
+        - name: rasa-claim1
+          persistentVolumeClaim:
+            claimName: rasa-claim1
+        - name: rasa-claim2
+          persistentVolumeClaim:
+            claimName: rasa-claim2
+  test: false
+  triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+          - rasa
+        from:
+          kind: ImageStreamTag
+          name: rasa:1.0.0
+      type: ImageChange
+status:
+  availableReplicas: 0
+  latestVersion: 0
+  observedGeneration: 0
+  replicas: 0
+  unavailableReplicas: 0
+  updatedReplicas: 0
